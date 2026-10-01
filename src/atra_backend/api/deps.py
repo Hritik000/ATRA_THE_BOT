@@ -57,7 +57,7 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 def get_api_key(
-    api_key_header: Optional[str] = Header(None, alias=settings.API_KEY_NAME)
+    api_key_header: Optional[str] = Header(None, alias=settings.API_KEY_NAME),
 ) -> Optional[str]:
     """
     Validate API key header if API_KEY is set in settings.

@@ -1,7 +1,7 @@
 """ATRA Backend Configuration."""
 
 import os
-from typing import List, Union, Optional
+from typing import List, Optional, Union
 
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings

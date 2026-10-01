@@ -1,10 +1,11 @@
 """ATRA Backend Main Application."""
 
 import logging
+
 from fastapi import FastAPI, Request, status
+from fastapi.exceptions import HTTPException as FastAPIHTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from fastapi.exceptions import HTTPException as FastAPIHTTPException
 
 from atra_backend.api.v1.router import api_router
 from atra_backend.core.config import settings

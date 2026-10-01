@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, Depends
 
+from atra_backend.api.deps import get_api_key
 from atra_backend.api.v1.endpoints import (
     agents,
     backtesting,
@@ -10,7 +11,6 @@ from atra_backend.api.v1.endpoints import (
     ml,
     validation,
 )
-from atra_backend.api.deps import get_api_key
 
 api_router = APIRouter(dependencies=[Depends(get_api_key)])
 
