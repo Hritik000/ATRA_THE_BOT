@@ -62,7 +62,7 @@ async def get_latest_candle(
 
 async def create_candle(db: AsyncSession, candle_in: CandleCreate) -> Candle:
     """Create a new candle."""
-    db_candle = Candle(**candle_in.dict())
+    db_candle = Candle(**candle_in.model_dump())
     db.add(db_candle)
     await db.commit()
     await db.refresh(db_candle)
@@ -73,7 +73,7 @@ async def create_candles(
     db: AsyncSession, candles_in: List[CandleCreate]
 ) -> List[Candle]:
     """Create multiple candles."""
-    db_candles = [Candle(**candle.dict()) for candle in candles_in]
+    db_candles = [Candle(**candle.model_dump()) for candle in candles_in]
     db.add_all(db_candles)
     await db.commit()
     for candle in db_candles:
@@ -89,7 +89,7 @@ async def update_candle(
     if not db_candle:
         return None
 
-    update_data = candle_in.dict(exclude_unset=True)
+    update_data = candle_in.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(db_candle, field, value)
 

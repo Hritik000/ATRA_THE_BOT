@@ -19,7 +19,7 @@ from atra_backend.crud.candle_crud import (
     get_latest_candle,
     update_candle,
 )
-from atra_backend.db.session import get_db
+from atra_backend.api.deps import get_db
 
 router = APIRouter()
 

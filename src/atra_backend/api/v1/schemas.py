@@ -5,7 +5,7 @@ from decimal import Decimal
 from typing import List, Optional, Dict, Any
 from uuid import UUID
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class CandleBase(BaseModel):
@@ -50,8 +50,7 @@ class CandleInDBBase(CandleBase):
     id: UUID
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Candle(CandleInDBBase):
@@ -94,8 +93,7 @@ class ValidationResultInDBBase(ValidationResultBase):
     batch_id: Optional[str] = None
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class ValidationResult(ValidationResultInDBBase):
@@ -128,13 +126,8 @@ class MarketDataRequest(BaseModel):
     to_time: Optional[datetime] = None
     limit: Optional[int] = Field(None, gt=0, le=10000)
 
-
-    @validator('from_time', 'to_time')
-    def validate_times(cls, v):
-        return v
-
-    @validator('to_time')
-    def to_time_after_from_time(cls, v, values):
-        if v and values.get('from_time') and v < values['from_time']:
+    @model_validator(mode='after')
+    def to_time_after_from_time(self):
+        if self.to_time and self.from_time and self.to_time < self.from_time:
             raise ValueError('to_time must be after from_time')
-        return v
+        return self
