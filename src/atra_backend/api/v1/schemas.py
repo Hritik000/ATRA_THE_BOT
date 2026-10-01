@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field, validator
@@ -66,6 +66,58 @@ class CandleList(BaseModel):
     page: int
     size: int
     pages: int
+
+
+# Validation Schemas
+class ValidationResultBase(BaseModel):
+    """Base validation result schema."""
+    validation_type: str
+    validation_rule: str
+    is_valid: bool
+    severity: str  # info, warning, error, critical
+    message: Optional[str] = None
+    actual_value: Optional[str] = None
+    expected_value: Optional[str] = None
+    validation_metadata: Optional[Dict[str, Any]] = None
+
+
+class ValidationResultCreate(ValidationResultBase):
+    """Schema for creating a validation result."""
+    candle_id: Optional[UUID] = None
+    batch_id: Optional[str] = None
+
+
+class ValidationResultInDBBase(ValidationResultBase):
+    """Base schema for validation result stored in DB."""
+    id: UUID
+    candle_id: Optional[UUID] = None
+    batch_id: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class ValidationResult(ValidationResultInDBBase):
+    """Schema for validation result response."""
+    pass
+
+
+class ValidationResultList(BaseModel):
+    """Schema for paginated validation result list."""
+    items: List[ValidationResult]
+    total: int
+    page: int
+    size: int
+    pages: int
+
+
+class ValidationRequest(BaseModel):
+    """Schema for validation requests."""
+    candle_ids: Optional[List[UUID]] = None
+    batch_id: Optional[str] = None
+    validation_types: Optional[List[str]] = None
+    rules: Optional[List[str]] = None
 
 
 class MarketDataRequest(BaseModel):
