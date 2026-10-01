@@ -1,5 +1,7 @@
 # ATRA
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 ## AI Trading Research & Analysis Platform
 
 ATRA is a human-in-the-loop quantitative research platform for market-data analysis, probabilistic ML signals, market-regime detection, risk controls, backtesting, paper trading, experiment tracking, and AI-assisted research.
