@@ -12,7 +12,7 @@
 - [ ] secret scanning
 
 ## Data
-- [ ] candle schema
+- [x] candle schema
 - [ ] ingestion adapter
 - [ ] validation
 - [ ] dataset versioning
