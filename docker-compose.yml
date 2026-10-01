@@ -1,0 +1,57 @@
+# ATRA Docker Compose
+
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=atra
+      - POSTGRES_PASSWORD=atra_secret_password_123
+      - POSTGRES_DB=atra
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - REDIS_HOST=redis
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./src:/app/src:ro
+      - ./alembic:/app/alembic:ro
+    depends_on:
+      - db
+      - mlflow
+      - redis
+    command: >
+      sh -c "
+      alembic upgrade head &&
+      uvicorn atra_backend.main:app --host 0.0.0.0 --port 8000
+      "
+
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=atra
+      - POSTGRES_PASSWORD=atra_secret_password_123
+      - POSTGRES_DB=atra
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:2.12.0
+    ports:
+      - "5000:5000"
+    environment:
+      - BACKEND_STORE_URI=postgresql://atra:atra_secret_password_123@db/mlflow
+    depends_on:
+      - db
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
