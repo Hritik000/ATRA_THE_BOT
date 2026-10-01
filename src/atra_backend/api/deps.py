@@ -2,13 +2,13 @@
 
 from typing import AsyncGenerator, Optional
 
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from atra_backend.core.config import settings
 
 # Engine will be created lazily
-_engine: Optional[create_async_engine] = None
+_engine: Optional[AsyncEngine] = None
 _AsyncSessionLocal: Optional[sessionmaker] = None
 
 

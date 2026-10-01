@@ -11,14 +11,13 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements and install dependencies
-COPY pyproject.toml .
-RUN pip install --no-cache-dir -e ".[dev]"
-
-# Copy application code
+# Copy application files and install dependencies
+COPY pyproject.toml README.md ./
 COPY src/ ./src/
 COPY alembic/ ./alembic/
-COPY alembic.ini .
+COPY alembic.ini ./
+
+RUN pip install --no-cache-dir .
 
 # Create non-root user
 RUN adduser --disabled-password --gecos '' appuser

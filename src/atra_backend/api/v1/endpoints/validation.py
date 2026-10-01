@@ -1,21 +1,21 @@
 """Validation API endpoints."""
 
-from typing import List, Optional
+from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from atra_backend.api.deps import get_db
-from atra_backend.crud import candle_crud, validation_crud
-from atra_backend.models.validation import ValidationResult
-from atra_backend.validation.engine import validate_candle_data
 from atra_backend.api.v1.schemas import (
-    ValidationResult,
-    ValidationResultList,
-    ValidationResultCreate,
     ValidationRequest,
+    ValidationResult,
+    ValidationResultCreate,
+    ValidationResultList,
 )
+from atra_backend.crud import candle_crud, validation_crud
+from atra_backend.models.validation import ValidationResult as ValidationResultModel
+from atra_backend.validation.engine import validate_candle_data
 
 router = APIRouter()
 
@@ -24,11 +24,17 @@ router = APIRouter()
 async def get_validation_results_endpoint(
     candle_id: Optional[UUID] = Query(None, description="Filter by candle ID"),
     batch_id: Optional[str] = Query(None, description="Filter by batch ID"),
-    validation_type: Optional[str] = Query(None, description="Filter by validation type"),
-    validation_rule: Optional[str] = Query(None, description="Filter by validation rule"),
+    validation_type: Optional[str] = Query(
+        None, description="Filter by validation type"
+    ),
+    validation_rule: Optional[str] = Query(
+        None, description="Filter by validation rule"
+    ),
     is_valid: Optional[bool] = Query(None, description="Filter by validation result"),
     severity: Optional[str] = Query(None, description="Filter by severity"),
-    limit: int = Query(1000, gt=0, le=10000, description="Maximum number of results to return"),
+    limit: int = Query(
+        1000, gt=0, le=10000, description="Maximum number of results to return"
+    ),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
     db: AsyncSession = Depends(get_db),
 ):
@@ -89,7 +95,9 @@ async def get_validation_result_endpoint(
 @router.get("/candle/{candle_id}", response_model=ValidationResultList)
 async def get_validation_results_for_candle_endpoint(
     candle_id: UUID,
-    limit: int = Query(1000, gt=0, le=10000, description="Maximum number of results to return"),
+    limit: int = Query(
+        1000, gt=0, le=10000, description="Maximum number of results to return"
+    ),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
     db: AsyncSession = Depends(get_db),
 ):
@@ -191,8 +199,14 @@ async def run_validation_endpoint(
         if validation_request.validation_types or validation_request.rules:
             filtered_results = []
             for result in validation_results:
-                type_match = not validation_request.validation_types or result.validation_type in validation_request.validation_types
-                rule_match = not validation_request.rules or result.validation_rule in validation_request.rules
+                type_match = (
+                    not validation_request.validation_types
+                    or result.validation_type in validation_request.validation_types
+                )
+                rule_match = (
+                    not validation_request.rules
+                    or result.validation_rule in validation_request.rules
+                )
                 if type_match and rule_match:
                     filtered_results.append(result)
             validation_results = filtered_results
@@ -203,7 +217,9 @@ async def run_validation_endpoint(
                 result.batch_id = validation_request.batch_id
 
         # Save validation results to database
-        saved_results = await validation_crud.create_validation_results(db, validation_results)
+        saved_results = await validation_crud.create_validation_results(
+            db, validation_results
+        )
         all_validation_results.extend(saved_results)
 
     # Return results
@@ -239,10 +255,12 @@ async def create_validation_result_endpoint(
             )
 
     # Create validation result object
-    db_validation_result = ValidationResult(
-        **validation_result.dict(exclude_unset=True)
+    db_validation_result = ValidationResultModel(
+        **validation_result.model_dump(exclude_unset=True)
     )
 
     # Save to database
-    saved_result = await validation_crud.create_validation_result(db, db_validation_result)
+    saved_result = await validation_crud.create_validation_result(
+        db, db_validation_result
+    )
     return saved_result
