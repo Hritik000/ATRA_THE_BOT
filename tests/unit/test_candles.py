@@ -1,13 +1,13 @@
 """Candle Endpoint Tests."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 from decimal import Decimal
 from uuid import UUID, uuid4
 
 from fastapi.testclient import TestClient
 from atra_backend.main import app
 
-client = TestClient(app)
+client = TestClient(app, raise_server_exceptions=False)
 
 
 def test_get_candles_endpoint():
@@ -53,7 +53,7 @@ def test_create_candle_endpoint():
     candle_data = {
         "asset": "BTC",
         "timeframe": "1h",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "open": "50000.00",
         "high": "51000.00",
         "low": "49000.00",
