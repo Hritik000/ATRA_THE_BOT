@@ -1,109 +1,185 @@
-# ATRA
+# ATRA (AI Trading Research & Analysis Platform)
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
+[![CI Pipeline](https://github.com/Hritik000/ATRA_THE_BOT/actions/workflows/ci.yml/badge.svg)](https://github.com/Hritik000/ATRA_THE_BOT/actions/workflows/ci.yml)
+[![Security Scanning](https://github.com/Hritik000/ATRA_THE_BOT/actions/workflows/codeql.yml/badge.svg)](https://github.com/Hritik000/ATRA_THE_BOT/actions/workflows/codeql.yml)
+[![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
-## AI Trading Research & Analysis Platform
+ATRA is a rigorous, human-in-the-loop quantitative research and analysis platform engineered for market-data ingestion, probabilistic ML signals, market-regime classification, fail-closed risk controls, event-driven backtesting, and auditable trade research.
 
-ATRA is a human-in-the-loop quantitative research platform for market-data analysis, probabilistic ML signals, market-regime detection, risk controls, backtesting, paper trading, experiment tracking, and AI-assisted research.
+---
 
-### Critical execution boundary
-ATRA does not automate Quotex trade execution. Quotex's published rules currently prohibit automated mechanisms/algorithms/specialized software performing operations without direct client participation. Re-check current platform terms before any future integration.
+## :warning: Critical Execution Boundary (Quotex Policy)
 
-### Goals
-- Reproducible market research
-- Time-series-safe ML
-- Robust backtesting
-- Independent risk controls
-- Paper trading
-- Explainable signals
-- Auditable experiments
-- Controlled AI agents
-- Industry-grade engineering
+> **ATRA STRICTLY DOES NOT AUTOMATE QUOTEX TRADE EXECUTION.**
+>
+> In compliance with Quotex platform policies and ethical engineering standards:
+> - Automated browser clicking (Puppeteer, Playwright, Selenium) is strictly prohibited.
+> - CAPTCHA bypass, session theft, private websocket tampering, or hidden API reverse engineering are explicitly out of scope.
+> - ATRA generates analytical signals, probabilities, and paper trades. **All live execution decisions remain 100% human-approved and manual.**
 
-### Non-goals
-- Automated Quotex clicking
-- CAPTCHA bypass
-- Session theft
-- Private API reverse engineering
-- Guaranteed profits
-- Martingale loss recovery
-- Fake Git activity
+---
 
-### Suggested stack
-Backend: Python, FastAPI, Pydantic, SQLAlchemy, Alembic, PostgreSQL.
-ML: NumPy, pandas, scikit-learn, XGBoost, optional Optuna/MLflow.
-Frontend: Next.js, TypeScript, Tailwind CSS, charting library.
-DevOps: Docker, GitHub Actions, secret/dependency scanning.
+## System Architecture
 
-### Architecture
 ```text
-Data -> Validation -> Features -> ML/Regime -> Signal -> Risk -> Human Approval
-                    |                         |
-                    +-> Backtesting ----------+
-                    +-> Paper Trading --------+
-                    +-> Research Agents ------+
+Market Data ----> Validation Layer ----> Feature Store ----> ML / Regime Detection
+                         |                                           |
+                         v                                           v
+                  Quality Database                             Signal Engine
+                         |                                           |
+                         v                                           v
+                   Backtesting Engine                        Fail-Closed Risk
+                         |                                           |
+                         +------------> Paper Trading <--------------+
+                                             |
+                                             v
+                                  Human Approval Interface
 ```
 
-See `/docs` for the complete specification.
+### Core Pipeline Modules
+1. **Market Data Layer**: Clean, normalized OHLCV time-series store with precision Decimal financial types and UTC timestamps.
+2. **Validation Engine**: Multi-tier data sanity auditing (OHLC relationship, price non-negativity, volume checks, timestamp continuity).
+3. **Feature Engineering**: Deterministic statistical & technical indicators calculated with strict anti-leakage guarantees.
+4. **Probabilistic Models**: Chronologically split, cross-validated machine learning models and market-regime classifiers.
+5. **Risk Engine**: Independent, fail-closed risk checks decoupled from model predictions.
+6. **Human Approval**: Clear, explainable signals presented for human review and manual execution.
 
-## Development Setup
+---
+
+## Repository Structure
+
+```text
+ATRA_THE_BOT/
+├── .github/
+│   ├── ISSUE_TEMPLATE/        # Standardized issue templates
+│   ├── workflows/             # CI, CodeQL security, and Docker workflows
+│   ├── dependabot.yml         # Automated dependency vulnerability updates
+│   └── PULL_REQUEST_TEMPLATE.md
+├── docs/                      # Architectural specs & technical guidelines
+├── alembic/                   # Database schema migrations
+├── src/
+│   └── atra_backend/
+│       ├── api/               # FastAPI route controllers (v1)
+│       ├── core/              # Settings, security & configuration
+│       ├── crud/              # Typed database access operations
+│       ├── db/                # Session and connection handling
+│       ├── models/            # SQLAlchemy database models
+│       └── validation/        # Data validation engine
+├── tests/
+│   ├── conftest.py            # Isolated fixtures & async mock session
+│   └── unit/                  # Unit test suite
+├── Dockerfile                 # Production multi-stage container
+├── docker-compose.yml         # Local stack (PostgreSQL + FastAPI)
+├── Makefile                   # Development automation commands
+├── pyproject.toml             # Dependencies & tool configurations
+└── README.md
+```
+
+---
+
+## Getting Started
 
 ### Prerequisites
-- Python 3.9+
-- Docker and Docker Compose (optional)
-- Make (optional)
+- **Python**: 3.10+ (tested on 3.10, 3.11, 3.12)
+- **PostgreSQL**: 15+ (or run via Docker Compose)
+- **Docker & Docker Compose** (optional, recommended)
 
-### Local Development
+### Quickstart
 
-1. Clone the repository
-2. Copy environment variables:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Hritik000/ATRA_THE_BOT.git
+   cd ATRA_THE_BOT
+   ```
+
+2. **Configure environment:**
    ```bash
    cp .env.example .env
-   # Edit .env with your configuration
+   # Customize environment variables in .env as needed
    ```
-3. Install dependencies:
+
+3. **Install dependencies:**
    ```bash
-   make install
+   pip install -e ".[dev]"
+   pre-commit install
    ```
-4. Run the development server:
+
+4. **Run migrations & start server:**
    ```bash
+   # Apply database migrations
+   alembic upgrade head
+
+   # Launch FastAPI development server
    make dev
    ```
-5. The API will be available at http://localhost:8000
+   Interactive OpenAPI documentation will be live at:
+   - Swagger UI: `http://localhost:8000/docs`
+   - ReDoc: `http://localhost:8000/redoc`
 
-### Docker Development
+---
 
-1. Copy environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
-2. Start all services:
-   ```bash
-   make docker-up
-   ```
-3. The API will be available at http://localhost:8000
+## Docker Quickstart
 
-### Testing
+To run the entire stack (FastAPI backend + PostgreSQL) in isolated containers:
 
 ```bash
-make test
+docker-compose up --build -d
 ```
 
-### Code Quality
+View logs:
+```bash
+docker-compose logs -f
+```
+
+---
+
+## Testing & Quality Control
+
+ATRA maintains rigorous engineering standards. Tests run isolated and deterministic.
 
 ```bash
-make lint
+# Run complete test suite with coverage
+make test
+
+# Format code
 make format
+
+# Run linter
+make lint
+
+# Type check
 make typecheck
 ```
 
-### Database Migrations
+---
 
-```bash
-# Create a new migration
-alembic revision --autogenerate -m "describe your changes"
+## API Endpoints Overview
 
-# Apply migrations
-alembic upgrade head
-```
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/health` | Service health status check |
+| `GET` | `/api/v1/market` | Paginated candle query with asset/timeframe filters |
+| `POST` | `/api/v1/market` | Ingest single OHLCV candle |
+| `POST` | `/api/v1/market/batch` | Batch ingest OHLCV candles |
+| `GET` | `/api/v1/market/latest` | Fetch the latest candle for an asset/timeframe |
+| `GET` | `/api/v1/validation` | Query candle validation results and quality metrics |
+| `GET` | `/api/v1/validation/candle/{id}` | Fetch validation report for a specific candle |
+
+---
+
+## Contributing
+
+We welcome contributions! Please review our guidelines before submitting pull requests:
+- [CONTRIBUTING.md](CONTRIBUTING.md) — Git workflow, branch naming, and testing rules
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — Community standards
+- [SECURITY.md](SECURITY.md) — Responsible vulnerability disclosure policy
+- [AGENTS.md](AGENTS.md) — Engineering rules and safety specifications
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
