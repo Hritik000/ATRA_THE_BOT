@@ -6,10 +6,9 @@ from uuid import UUID
 
 from sqlalchemy import and_, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.expression import Select
 
+from atra_backend.api.v1.schemas import CandleCreate, CandleUpdate
 from atra_backend.models.candle import Candle
-from atra_backend.api.v1.schemas import CandleCreate, CandleUpdate, MarketDataRequest
 
 
 async def get_candle(db: AsyncSession, candle_id: UUID) -> Optional[Candle]:
@@ -117,10 +116,14 @@ async def count_candles(
     end_time: Optional[datetime] = None,
 ) -> int:
     """Count candles for asset/timeframe with optional time range."""
-    stmt = select(func.count()).select_from(Candle).where(
-        and_(
-            Candle.asset == asset,
-            Candle.timeframe == timeframe,
+    stmt = (
+        select(func.count())
+        .select_from(Candle)
+        .where(
+            and_(
+                Candle.asset == asset,
+                Candle.timeframe == timeframe,
+            )
         )
     )
 

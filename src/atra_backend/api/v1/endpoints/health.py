@@ -1,6 +1,7 @@
 """Health Check Endpoints."""
 
 from fastapi import APIRouter
+
 from atra_backend.core.config import settings
 
 router = APIRouter()

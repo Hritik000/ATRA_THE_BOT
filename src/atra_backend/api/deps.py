@@ -2,6 +2,7 @@
 
 from typing import AsyncGenerator, Optional
 
+from fastapi import Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -53,3 +54,23 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         # but the actual database operations will fail later
         # This allows the application to start even if DB is not available
         raise e
+
+
+def get_api_key(
+    api_key_header: Optional[str] = Header(None, alias=settings.API_KEY_NAME)
+) -> Optional[str]:
+    """
+    Validate API key header if API_KEY is set in settings.
+
+    Returns:
+        Optional[str]: The API key if valid, None if API_KEY not configured.
+    """
+    if settings.API_KEY is None:
+        # API key not configured, skip validation
+        return None
+    if api_key_header == settings.API_KEY:
+        return api_key_header
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid API Key",
+    )

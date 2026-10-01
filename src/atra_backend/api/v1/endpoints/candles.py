@@ -7,8 +7,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from atra_backend.api.v1.schemas import Candle, CandleCreate, CandleList, MarketDataRequest, CandleUpdate
-from atra_backend.core.config import settings
+from atra_backend.api.deps import get_db
+from atra_backend.api.v1.schemas import (
+    Candle,
+    CandleCreate,
+    CandleList,
+    CandleUpdate,
+)
 from atra_backend.crud.candle_crud import (
     count_candles,
     create_candle,
@@ -19,7 +24,6 @@ from atra_backend.crud.candle_crud import (
     get_latest_candle,
     update_candle,
 )
-from atra_backend.api.deps import get_db
 
 router = APIRouter()
 
@@ -27,10 +31,14 @@ router = APIRouter()
 @router.get("", response_model=CandleList)
 async def get_candles_endpoint(
     asset: str = Query(..., max_length=20, description="Asset symbol"),
-    timeframe: str = Query(..., max_length=10, description="Timeframe (e.g., 1m, 5m, 1h, 1d)"),
+    timeframe: str = Query(
+        ..., max_length=10, description="Timeframe (e.g., 1m, 5m, 1h, 1d)"
+    ),
     from_time: Optional[datetime] = Query(None, description="Start time (ISO format)"),
     to_time: Optional[datetime] = Query(None, description="End time (ISO format)"),
-    limit: int = Query(1000, gt=0, le=10000, description="Maximum number of candles to return"),
+    limit: int = Query(
+        1000, gt=0, le=10000, description="Maximum number of candles to return"
+    ),
     offset: int = Query(0, ge=0, description="Offset for pagination"),
     db: AsyncSession = Depends(get_db),
 ):
@@ -82,7 +90,9 @@ async def get_candles_endpoint(
 @router.get("/latest", response_model=Optional[Candle])
 async def get_latest_candle_endpoint(
     asset: str = Query(..., max_length=20, description="Asset symbol"),
-    timeframe: str = Query(..., max_length=10, description="Timeframe (e.g., 1m, 5m, 1h, 1d)"),
+    timeframe: str = Query(
+        ..., max_length=10, description="Timeframe (e.g., 1m, 5m, 1h, 1d)"
+    ),
     db: AsyncSession = Depends(get_db),
 ):
     """Get the latest candle for an asset/timeframe."""

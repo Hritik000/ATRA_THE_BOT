@@ -6,7 +6,6 @@ from decimal import Decimal
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
-import pytest
 from fastapi.testclient import TestClient
 
 from atra_backend.models.candle import Candle
@@ -48,7 +47,9 @@ def test_validation_engine_valid_candle():
 
     # All returned checks should be valid
     invalid_results = [r for r in results if not r.is_valid]
-    assert len(invalid_results) == 0, f"Expected all checks to pass, failed: {invalid_results}"
+    assert len(invalid_results) == 0, (
+        f"Expected all checks to pass, failed: {invalid_results}"
+    )
 
 
 def test_validation_engine_invalid_high_low():

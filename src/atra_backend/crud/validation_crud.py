@@ -3,15 +3,14 @@
 from typing import List, Optional
 from uuid import UUID
 
-from sqlalchemy import select, and_, desc
+from sqlalchemy import and_, desc, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from atra_backend.models.validation import ValidationResult
 
 
 async def get_validation_result(
-    db: AsyncSession,
-    validation_id: UUID
+    db: AsyncSession, validation_id: UUID
 ) -> Optional[ValidationResult]:
     """Get a validation result by ID."""
     result = await db.execute(
@@ -67,16 +66,12 @@ async def get_validation_results_for_candle(
 ) -> List[ValidationResult]:
     """Get validation results for a specific candle."""
     return await get_validation_results(
-        db=db,
-        candle_id=candle_id,
-        limit=limit,
-        offset=offset
+        db=db, candle_id=candle_id, limit=limit, offset=offset
     )
 
 
 async def create_validation_result(
-    db: AsyncSession,
-    validation_result: ValidationResult
+    db: AsyncSession, validation_result: ValidationResult
 ) -> ValidationResult:
     """Create a new validation result."""
     db.add(validation_result)
@@ -86,8 +81,7 @@ async def create_validation_result(
 
 
 async def create_validation_results(
-    db: AsyncSession,
-    validation_results: List[ValidationResult]
+    db: AsyncSession, validation_results: List[ValidationResult]
 ) -> List[ValidationResult]:
     """Create multiple validation results."""
     db.add_all(validation_results)
@@ -97,10 +91,7 @@ async def create_validation_results(
     return validation_results
 
 
-async def delete_validation_result(
-    db: AsyncSession,
-    validation_id: UUID
-) -> bool:
+async def delete_validation_result(db: AsyncSession, validation_id: UUID) -> bool:
     """Delete a validation result by ID."""
     validation_result = await get_validation_result(db, validation_id)
     if validation_result:
@@ -120,7 +111,7 @@ async def count_validation_results(
     severity: Optional[str] = None,
 ) -> int:
     """Count validation results with optional filtering."""
-    from sqlalchemy import select, func
+    from sqlalchemy import func, select
 
     stmt = select(func.count()).select_from(ValidationResult)
 
@@ -141,6 +132,7 @@ async def count_validation_results(
 
     if conditions:
         from sqlalchemy import and_
+
         stmt = stmt.where(and_(*conditions))
 
     result = await db.execute(stmt)

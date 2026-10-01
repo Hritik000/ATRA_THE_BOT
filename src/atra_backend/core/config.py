@@ -1,9 +1,10 @@
 """ATRA Backend Configuration."""
 
+import os
+from typing import List, Union, Optional
+
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings
-from typing import List, Optional, Union
-import os
 
 
 class Settings(BaseSettings):
@@ -48,6 +49,8 @@ class Settings(BaseSettings):
     # Security settings
     SECRET_KEY: str = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
+    API_KEY: Optional[str] = os.getenv("API_KEY", None)
+    API_KEY_NAME: str = os.getenv("API_KEY_NAME", "X-API-Key")
 
     # MLflow settings
     MLFLOW_TRACKING_URI: str = os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000")

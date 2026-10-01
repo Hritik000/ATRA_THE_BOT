@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional, Dict, Any
+from typing import Any, Dict, List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 class CandleBase(BaseModel):
     """Base candle schema."""
+
     asset: str = Field(..., max_length=20)
     timeframe: str = Field(..., max_length=10)
     timestamp: datetime
@@ -24,11 +25,13 @@ class CandleBase(BaseModel):
 
 class CandleCreate(CandleBase):
     """Schema for creating a candle."""
+
     pass
 
 
 class CandleUpdate(BaseModel):
     """Schema for updating a candle."""
+
     asset: Optional[str] = Field(None, max_length=20)
     timeframe: Optional[str] = Field(None, max_length=10)
     timestamp: Optional[datetime] = None
@@ -47,6 +50,7 @@ CandleUpdate.model_rebuild()
 
 class CandleInDBBase(CandleBase):
     """Base schema for candle stored in DB."""
+
     id: UUID
     created_at: datetime
 
@@ -55,11 +59,13 @@ class CandleInDBBase(CandleBase):
 
 class Candle(CandleInDBBase):
     """Schema for candle response."""
+
     pass
 
 
 class CandleList(BaseModel):
     """Schema for paginated candle list."""
+
     items: List[Candle]
     total: int
     page: int
@@ -70,6 +76,7 @@ class CandleList(BaseModel):
 # Validation Schemas
 class ValidationResultBase(BaseModel):
     """Base validation result schema."""
+
     validation_type: str
     validation_rule: str
     is_valid: bool
@@ -82,12 +89,14 @@ class ValidationResultBase(BaseModel):
 
 class ValidationResultCreate(ValidationResultBase):
     """Schema for creating a validation result."""
+
     candle_id: Optional[UUID] = None
     batch_id: Optional[str] = None
 
 
 class ValidationResultInDBBase(ValidationResultBase):
     """Base schema for validation result stored in DB."""
+
     id: UUID
     candle_id: Optional[UUID] = None
     batch_id: Optional[str] = None
@@ -98,11 +107,13 @@ class ValidationResultInDBBase(ValidationResultBase):
 
 class ValidationResult(ValidationResultInDBBase):
     """Schema for validation result response."""
+
     pass
 
 
 class ValidationResultList(BaseModel):
     """Schema for paginated validation result list."""
+
     items: List[ValidationResult]
     total: int
     page: int
@@ -112,6 +123,7 @@ class ValidationResultList(BaseModel):
 
 class ValidationRequest(BaseModel):
     """Schema for validation requests."""
+
     candle_ids: Optional[List[UUID]] = None
     batch_id: Optional[str] = None
     validation_types: Optional[List[str]] = None
@@ -120,14 +132,15 @@ class ValidationRequest(BaseModel):
 
 class MarketDataRequest(BaseModel):
     """Schema for market data requests."""
+
     asset: str = Field(..., max_length=20)
     timeframe: str = Field(..., max_length=10)
     from_time: Optional[datetime] = None
     to_time: Optional[datetime] = None
     limit: Optional[int] = Field(None, gt=0, le=10000)
 
-    @model_validator(mode='after')
+    @model_validator(mode="after")
     def to_time_after_from_time(self):
         if self.to_time and self.from_time and self.to_time < self.from_time:
-            raise ValueError('to_time must be after from_time')
+            raise ValueError("to_time must be after from_time")
         return self
