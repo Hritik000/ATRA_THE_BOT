@@ -5,9 +5,9 @@
 - [x] AGENTS.md installed at root
 - [x] Python tooling
 - [ ] Frontend tooling
-- [ ] Docker Compose
+- [x] Docker Compose
 - [ ] CI
-- [ ] lint/typecheck/test commands
+- [x] lint/typecheck/test commands
 - [ ] pre-commit
 - [ ] secret scanning
 
@@ -38,7 +38,7 @@
 - [ ] paper trading
 
 ## Product
-- [ ] FastAPI
+- [x] FastAPI
 - [ ] authentication/authorization
 - [ ] dashboard
 - [ ] experiment tracking
