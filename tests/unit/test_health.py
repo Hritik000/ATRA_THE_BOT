@@ -1,9 +1,6 @@
 """Health Endpoint Tests."""
 
 from fastapi.testclient import TestClient
-import pytest
-
-from atra_backend.main import app
 
 
 def test_health_check(client: TestClient):

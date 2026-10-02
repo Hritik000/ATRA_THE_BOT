@@ -2,10 +2,7 @@
 
 from datetime import datetime, timezone
 
-import pytest
 from fastapi.testclient import TestClient
-
-from atra_backend.main import app
 
 
 def test_get_candles_endpoint(client: TestClient):

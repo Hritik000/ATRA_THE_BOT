@@ -6,7 +6,6 @@ from decimal import Decimal
 from unittest.mock import AsyncMock
 from uuid import uuid4
 
-import pytest
 from fastapi.testclient import TestClient
 
 from atra_backend.models.candle import Candle
