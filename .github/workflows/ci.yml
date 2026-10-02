@@ -75,6 +75,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e ".[dev]"
+          # Explicitly install httpx2 as backup for test client
+          pip install httpx2>=2.13.1
+
+      - name: Verify httpx2 installation
+        run: |
+          python -c "import httpx2; print(f'httpx2 version: {httpx2.__version__}')"
 
       - name: Run test suite with coverage
         env:
