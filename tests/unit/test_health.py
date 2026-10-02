@@ -1,13 +1,12 @@
 """Health Endpoint Tests."""
 
 from fastapi.testclient import TestClient
+import pytest
 
 from atra_backend.main import app
 
-client = TestClient(app)
 
-
-def test_health_check():
+def test_health_check(client: TestClient):
     """Test health check endpoint."""
     response = client.get("/health")
     assert response.status_code == 200
@@ -15,7 +14,7 @@ def test_health_check():
     assert data["status"] == "healthy"
 
 
-def test_root_endpoint():
+def test_root_endpoint(client: TestClient):
     """Test root endpoint."""
     response = client.get("/")
     assert response.status_code == 200

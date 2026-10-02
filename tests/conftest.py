@@ -49,5 +49,5 @@ def mock_db_session():
 
 @pytest.fixture
 def client() -> TestClient:
-    """FastAPI TestClient fixture."""
+    """FastAPI TestClient fixture with mocked database."""
     return TestClient(app)
