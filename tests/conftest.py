@@ -6,10 +6,9 @@ from typing import AsyncGenerator
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from fastapi.testclient import TestClient
-
 from atra_backend.api.deps import get_db
 from atra_backend.main import app
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture(autouse=True)

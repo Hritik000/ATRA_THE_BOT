@@ -1,0 +1,43 @@
+# ATRA Frontend Dockerfile
+
+# Base image
+FROM node:20-alpine AS base
+
+# Set working directory
+WORKDIR /app
+
+# Dependencies
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm ci
+
+# Builder
+FROM base AS builder
+COPY frontend/ ./
+COPY --from=deps /app/node_modules ./node_modules
+RUN npm run build
+
+# Runner
+FROM base AS runner
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy necessary files
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+# Change ownership
+RUN chown -R nextjs:nodejs ./public ./node_modules .next/standalone .next/static
+
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Start the app
+CMD ["node", "server.js"]

@@ -118,3 +118,6 @@ alembic/
 !alembic/env.py
 !alembic/versions/
 !alembic/script.py.mako
+# Next.js build outputs
+.next/
+out/

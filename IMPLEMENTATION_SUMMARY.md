@@ -61,7 +61,7 @@ Successfully implemented the validation layer as the next component in the ATRA 
 
 ### OHLC Logic Validation
 - high_gte_low: High price >= Low price
-- high_gte_open: High price >= Open price  
+- high_gte_open: High price >= Open price
 - high_gte_close: High price >= Close price
 - low_lte_open: Low price <= Open price
 - low_lte_close: Low price <= Close price
@@ -97,7 +97,7 @@ Successfully implemented the validation layer as the next component in the ATRA 
 ## Integration with Data Pipeline
 The validation layer fits into the ATRA data pipeline as follows:
 1. **Data Layer**: Candle data ingested and stored
-2. **Validation Layer** (Implemented): 
+2. **Validation Layer** (Implemented):
    - Validates incoming candle data against quality rules
    - Stores validation results linked to source candles
    - Provides APIs to query validation outcomes
@@ -119,7 +119,7 @@ The validation layer fits into the ATRA data pipeline as follows:
 ```
 Created:
 - src/atra_backend/models/validation.py
-- src/atra_backend/crud/validation_crud.py  
+- src/atra_backend/crud/validation_crud.py
 - src/atra_backend/validation/engine.py
 - src/atra_backend/api/v1/endpoints/validation.py
 - src/atra_backend/api/deps.py

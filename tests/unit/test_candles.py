@@ -11,9 +11,9 @@ def test_get_candles_endpoint(client: TestClient):
         "/api/v1/market", params={"asset": "BTC", "timeframe": "1h", "limit": 10}
     )
     # Since we're using mocked database, we expect 200 (empty list)
-    assert response.status_code == 200, (
-        f"Expected 200, got {response.status_code}: {response.text}"
-    )
+    assert (
+        response.status_code == 200
+    ), f"Expected 200, got {response.status_code}: {response.text}"
     data = response.json()
     assert "items" in data
     assert "total" in data
@@ -30,9 +30,9 @@ def test_get_latest_candle_endpoint(client: TestClient):
         "/api/v1/market/latest", params={"asset": "ETH", "timeframe": "1h"}
     )
     # Since we're using mocked database, we expect 200 (null - no data)
-    assert response.status_code == 200, (
-        f"Expected 200, got {response.status_code}: {response.text}"
-    )
+    assert (
+        response.status_code == 200
+    ), f"Expected 200, got {response.status_code}: {response.text}"
     # Could be None (no data) or a candle object
     assert response.json() is None or isinstance(response.json(), dict)
 
@@ -54,9 +54,9 @@ def test_create_candle_endpoint(client: TestClient):
 
     response = client.post("/api/v1/market", json=candle_data)
     # Since we're using mocked database, we expect 201 (created)
-    assert response.status_code == 201, (
-        f"Expected 201, got {response.status_code}: {response.text}"
-    )
+    assert (
+        response.status_code == 201
+    ), f"Expected 201, got {response.status_code}: {response.text}"
     data = response.json()
     assert "id" in data
     assert data["asset"] == "BTC"
@@ -69,9 +69,9 @@ def test_market_data_request_validation(client: TestClient):
     response = client.get(
         "/api/v1/market", params={"asset": "BTC", "timeframe": "1h", "limit": 100}
     )
-    assert response.status_code == 200, (
-        f"Expected 200, got {response.status_code}: {response.text}"
-    )
+    assert (
+        response.status_code == 200
+    ), f"Expected 200, got {response.status_code}: {response.text}"
 
     # Test invalid limit (too high)
     response = client.get(
@@ -82,9 +82,9 @@ def test_market_data_request_validation(client: TestClient):
             "limit": 15000,  # Above max of 10000
         },
     )
-    assert response.status_code == 422, (
-        f"Expected 422 for validation error, got {response.status_code}: {response.text}"
-    )
+    assert (
+        response.status_code == 422
+    ), f"Expected 422 for validation error, got {response.status_code}: {response.text}"
 
     # Test invalid time range
     response = client.get(
@@ -96,6 +96,6 @@ def test_market_data_request_validation(client: TestClient):
             "to_time": "2026-10-01T10:00:00Z",  # Before from_time
         },
     )
-    assert response.status_code == 400, (
-        f"Expected 400 for bad request, got {response.status_code}: {response.text}"
-    )
+    assert (
+        response.status_code == 400
+    ), f"Expected 400 for bad request, got {response.status_code}: {response.text}"

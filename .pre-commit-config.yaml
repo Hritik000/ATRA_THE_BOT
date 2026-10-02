@@ -8,6 +8,8 @@ repos:
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: check-case-conflict
+      - id: check-json
+      - id: debug-statements
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.4.4
@@ -20,3 +22,12 @@ repos:
     rev: 24.4.2
     hooks:
       - id: black
+
+  - repo: local
+    hooks:
+      - id: frontend-eslint
+        name: Frontend ESLint
+        entry: bash -c 'cd frontend && npx eslint --fix .'
+        language: system
+        files: frontend/.*
+        pass_filenames: false

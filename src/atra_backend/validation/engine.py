@@ -4,10 +4,9 @@ import logging
 from typing import List, Optional
 from uuid import UUID, uuid4
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from atra_backend.models.candle import Candle
 from atra_backend.models.validation import ValidationResult
+from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
 
@@ -230,9 +229,9 @@ class ValidationEngine:
                     validation_type="volume_validation",
                     validation_rule="volume_non_negative",
                     message="Volume is non-negative or null",
-                    actual_value=str(candle.volume)
-                    if candle.volume is not None
-                    else "null",
+                    actual_value=(
+                        str(candle.volume) if candle.volume is not None else "null"
+                    ),
                 )
             )
 
