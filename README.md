@@ -183,3 +183,54 @@ We welcome contributions! Please review our guidelines before submitting pull re
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Frontend Development
+
+The frontend is located in the `frontend/` directory and is a Next.js application with TypeScript and Tailwind CSS.
+
+### Installing Frontend Dependencies
+
+```bash
+cd frontend
+npm ci
+```
+
+### Running the Frontend Development Server
+
+```bash
+cd frontend
+npm run dev
+```
+
+The frontend will be available at http://localhost:3000.
+
+### Building for Production
+
+```bash
+cd frontend
+npm run build
+```
+
+### Running Linting
+
+```bash
+cd frontend
+npm run lint
+```
+
+### Running Tests
+
+```bash
+cd frontend
+npm test
+```
+
+### Docker
+
+The frontend is containerized and can be run via Docker Compose:
+
+```bash
+docker-compose up frontend
+```
+
+Then visit http://localhost:3000.
