@@ -234,3 +234,61 @@ docker-compose up frontend
 ```
 
 Then visit http://localhost:3000.
+
+## Market Data Ingestion
+
+The ingestion service fetches market data from external sources (e.g., Binance) and stores it in the ATRA database via the API.
+
+### Running the Ingestion Service
+
+The ingestion service can be run as a standalone process to collect historical or real-time market data.
+
+#### Configuration
+
+Set the following environment variables:
+
+- `INGESTION_SYMBOLS`: Comma-separated list of trading pair symbols (default: "BTCUSDT,ETHUSDT")
+- `INGESTION_INTERVAL`: Candlestick interval (e.g., "1m", "5m", "1h", "1d"; default: "1m")
+- `INGESTION_LIMIT`: Number of candles to fetch per request (default: 500)
+- `INGESTION_INTERVAL_SECONDS`: How often to fetch data in seconds (default: 60)
+- `INGESTION_API_URL`: Base URL for the exchange API (default: "https://api.binance.com")
+
+#### Starting the Service
+
+```bash
+# Install dependencies if not already installed
+pip install -e ".[dev]"
+
+# Run the ingestion service
+python -m atra_backend.services.ingestion
+```
+
+The service will run indefinitely, fetching data at the specified interval and storing it in the database.
+
+#### Example: Ingest Bitcoin and Ethereum 1-minute data
+
+```bash
+export INGESTION_SYMBOLS="BTCUSDT,ETHUSDT"
+export INGESTION_INTERVAL="1m"
+export INGESTION_INTERVAL_SECONDS=30
+python -m atra_backend.services.ingestion
+```
+
+#### Stopping the Service
+
+Press `Ctrl+C` to stop the service gracefully.
+
+### Data Flow
+
+1. Ingestion service fetches candle data from the external API
+2. Data is converted to ATRA's internal format
+3. Candles are stored in the database via the CRUD layer
+4. Validation engine runs automatically on stored candles
+5. Validation results are stored in the database (via the validation layer)
+
+### Notes
+
+- The ingestion service respects rate limits of the external API
+- Failed validations are logged but do not prevent storage
+- The service can be extended to support other exchanges by modifying the fetch method
+- For production use, consider running the service as a background process or using a process manager
