@@ -15,6 +15,7 @@ const config = {
   ],
   transform: {
     '^.+.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+    '^.+.(js)$': ['ts-jest', { tsconfig: 'tsconfig.json', useESM: true }],
   },
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
@@ -22,4 +23,4 @@ const config = {
   },
 };
 
-module.exports = config;
+export default config;
