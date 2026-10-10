@@ -2,10 +2,11 @@
 
 from typing import AsyncGenerator, Optional
 
-from atra_backend.core.config import settings
 from fastapi import Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+
+from atra_backend.core.config import settings
 
 # Engine will be created lazily
 _engine: Optional[AsyncEngine] = None

@@ -1,5 +1,7 @@
 """ATRA Backend API V1 Router."""
 
+from fastapi import APIRouter, Depends
+
 from atra_backend.api.deps import get_api_key
 from atra_backend.api.v1.endpoints import (
     agents,
@@ -9,7 +11,6 @@ from atra_backend.api.v1.endpoints import (
     ml,
     validation,
 )
-from fastapi import APIRouter, Depends
 
 api_router = APIRouter(dependencies=[Depends(get_api_key)])
 

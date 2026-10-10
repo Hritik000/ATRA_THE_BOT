@@ -4,9 +4,10 @@ import logging
 from typing import List, Optional
 from uuid import UUID, uuid4
 
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from atra_backend.models.candle import Candle
 from atra_backend.models.validation import ValidationResult
-from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
 

@@ -4,6 +4,9 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from atra_backend.api.deps import get_db
 from atra_backend.api.v1.schemas import (
     Candle,
@@ -21,8 +24,6 @@ from atra_backend.crud.candle_crud import (
     get_latest_candle,
     update_candle,
 )
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 

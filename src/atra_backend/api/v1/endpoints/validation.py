@@ -3,6 +3,9 @@
 from typing import Optional
 from uuid import UUID
 
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from atra_backend.api.deps import get_db
 from atra_backend.api.v1.schemas import (
     ValidationRequest,
@@ -13,8 +16,6 @@ from atra_backend.api.v1.schemas import (
 from atra_backend.crud import candle_crud, validation_crud
 from atra_backend.models.validation import ValidationResult as ValidationResultModel
 from atra_backend.validation.engine import validate_candle_data
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter()
 

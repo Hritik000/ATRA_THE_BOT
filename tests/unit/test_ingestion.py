@@ -5,13 +5,14 @@ from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from atra_backend.api.v1.schemas import CandleCreate
 from atra_backend.services.ingestion import (
     BinanceExchangeAdapter,
     ExchangeAdapter,
     IngestionService,
 )
-from sqlalchemy.ext.asyncio import AsyncSession
 
 
 def test_exchange_adapter_abstract_base_class():
